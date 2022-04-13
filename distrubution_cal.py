@@ -5,8 +5,17 @@ def run(n):
     topn = read_n_tolist(n)
     dict_array = read_all_order()
     order_count = len(dict_array)
-    result = len(check_in_top_n(dict_array,topn))
-    print(result," Order only contain", "Top", n, " SPU", "among ",order_count, "orders. The ration is ",result/order_count*100, "%" )
+    result, result_test_dict_object = check_in_top_n(dict_array,topn)
+    result_len = len(result)
+
+    test(result_test_dict_object, topn)
+
+    print(result_len," Order only contain", "Top", n, " SPU", "among ",order_count, "orders. The ration is ",result_len/order_count*100, "%" )
+    # print(topn)
+    # print("-------------")
+    # for i in result:
+    #     print(str(i))
+    read_all_order_test(dict_array)
 
 
 def read_all_order():
@@ -34,6 +43,7 @@ def read_all_order():
 
 def check_in_top_n(dict_array, top_n):
     all_order_sku_is_topn = []
+    all_order_sku_is_topn_object_test = []
     for order_dict in dict_array:
         flag = 0
         temp_list = list(order_dict.values())[0]
@@ -41,8 +51,9 @@ def check_in_top_n(dict_array, top_n):
             if sku not in top_n:
                 flag += 1
         if flag == 0:
-            all_order_sku_is_topn.append(sku)
-    return all_order_sku_is_topn
+            all_order_sku_is_topn.append(order_dict.keys())
+            all_order_sku_is_topn_object_test.append(order_dict)
+    return all_order_sku_is_topn, all_order_sku_is_topn_object_test
 
 
 def read_n_tolist(n):
@@ -64,8 +75,29 @@ def read_n_tolist(n):
             top_n_list.append(key)
     return top_n_list
 
+def test(a_dict, topn):
+    for i in a_dict:
+        for k in i.values():
+            for j in k:
+                if j not in topn:
+                    print("fuck you, you made mistakes")
+                    break
+
+def read_all_order_test(dict_obj):
+    with open('test_all_order.csv', 'w', newline='') as csvfile:
+        spamwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        for i in dict_obj:
+            for k in i.values():
+                for j in k:
+                    spamwriter.writerow([str(i.keys()), j])
+
+
+
+
+
 
 if __name__ == '__main__':
-    for i in range(5,115,5):
-        run(i)
+    # for i in range(5,115,5):
+    #     run(i)
+    run(5)
 
